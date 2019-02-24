@@ -16,6 +16,8 @@
 		181B40EF22218CE90099C768 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 181B40EE22218CE90099C768 /* Assets.xcassets */; };
 		181B40F222218CE90099C768 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 181B40F022218CE90099C768 /* LaunchScreen.storyboard */; };
 		181B40FA2221A2F20099C768 /* drip.wav in Resources */ = {isa = PBXBuildFile; fileRef = 181B40F92221A2F20099C768 /* drip.wav */; };
+		18CA63DA2223171600D4CDFA /* music.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 18CA63D92223171600D4CDFA /* music.mp3 */; };
+		18CA63DC2223174700D4CDFA /* lazerzap.wav in Resources */ = {isa = PBXBuildFile; fileRef = 18CA63DB2223174700D4CDFA /* lazerzap.wav */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +32,8 @@
 		181B40F122218CE90099C768 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		181B40F322218CE90099C768 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		181B40F92221A2F20099C768 /* drip.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = drip.wav; sourceTree = "<group>"; };
+		18CA63D92223171600D4CDFA /* music.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = music.mp3; sourceTree = "<group>"; };
+		18CA63DB2223174700D4CDFA /* lazerzap.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = lazerzap.wav; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +71,8 @@
 				181B40E522218CE70099C768 /* Actions.sks */,
 				181B40E722218CE70099C768 /* GameScene.swift */,
 				181B40E922218CE70099C768 /* GameViewController.swift */,
+				18CA63D92223171600D4CDFA /* music.mp3 */,
+				18CA63DB2223174700D4CDFA /* lazerzap.wav */,
 				181B40F92221A2F20099C768 /* drip.wav */,
 				181B40EB22218CE70099C768 /* Main.storyboard */,
 				181B40EE22218CE90099C768 /* Assets.xcassets */,
@@ -135,10 +141,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				181B40ED22218CE70099C768 /* Main.storyboard in Resources */,
+				18CA63DC2223174700D4CDFA /* lazerzap.wav in Resources */,
 				181B40E422218CE70099C768 /* GameScene.sks in Resources */,
 				181B40EF22218CE90099C768 /* Assets.xcassets in Resources */,
 				181B40FA2221A2F20099C768 /* drip.wav in Resources */,
 				181B40F222218CE90099C768 /* LaunchScreen.storyboard in Resources */,
+				18CA63DA2223171600D4CDFA /* music.mp3 in Resources */,
 				181B40E622218CE70099C768 /* Actions.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
