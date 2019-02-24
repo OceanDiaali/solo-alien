@@ -10,8 +10,16 @@ import SpriteKit
 import GameplayKit
 
 class GameScene: SKScene {
+    // for collisions physics
+    struct PhysicsCategory {
+        static let none      : UInt32 = 0
+        static let all       : UInt32 = UInt32.max
+        static let enemy   : UInt32 = 0b1       // 1
+        static let energyring: UInt32 = 0b10      // 2
+    }
+    
     // game time per play
-    var gameTime = 20
+    var gameTime = 31
     // score display
     var scoreLabel: SKLabelNode!
     
@@ -25,7 +33,7 @@ class GameScene: SKScene {
     let player = SKSpriteNode(imageNamed: "alien")
     
     // global declaration of energy ring sound
-    let energyRingSound = SKAction.playSoundFileNamed("drip.wav", waitForCompletion: false)
+    let energyRingSound = SKAction.playSoundFileNamed("lazerzap.wav", waitForCompletion: false)
     
     override func didMove(to view: SKView) {
         // configure game background
@@ -47,7 +55,7 @@ class GameScene: SKScene {
         // text display for countdown timer
         let timerLabel: SKLabelNode!
         timerLabel = SKLabelNode(fontNamed: "Chalkduster")
-        timerLabel.text = "20"
+        timerLabel.text = "30"
         timerLabel.fontSize = 72
         //timerLabel.horizontalAlignmentMode = .left
         timerLabel.position = CGPoint(x: 360, y: 1820)
@@ -88,6 +96,13 @@ class GameScene: SKScene {
         player.zPosition = 1
         self.addChild(player)
         
+        physicsWorld.gravity = .zero
+        physicsWorld.contactDelegate = self
+        
+        let backgroundMusic = SKAudioNode(fileNamed: "music.mp3")
+        backgroundMusic.autoplayLooped = true
+        addChild(backgroundMusic)
+        
         
     } // did Move to
     
@@ -95,6 +110,14 @@ class GameScene: SKScene {
         let energy = SKSpriteNode(imageNamed: "energy-ring")
         energy.setScale(0.2)
         energy.position = player.position
+        // ====================
+        energy.physicsBody = SKPhysicsBody(circleOfRadius: energy.size.width/2)
+        energy.physicsBody?.isDynamic = true
+        energy.physicsBody?.categoryBitMask = PhysicsCategory.energyring
+        energy.physicsBody?.contactTestBitMask = PhysicsCategory.enemy
+        energy.physicsBody?.collisionBitMask = PhysicsCategory.none
+        energy.physicsBody?.usesPreciseCollisionDetection = true
+        // ====================
         energy.zPosition = 2
         self.addChild(energy)
         
@@ -132,6 +155,13 @@ class GameScene: SKScene {
     func addFlame() {
         //create sprite
         let flame = SKSpriteNode(imageNamed: "fire-flame")
+        /* for physics
+        flame.physicsBody = SKPhysicsBody(rectangleOf: flame.size) // 1
+        flame.physicsBody?.isDynamic = true // 2
+        flame.physicsBody?.categoryBitMask = PhysicsCategory.flame // 3
+        flame.physicsBody?.contactTestBitMask = PhysicsCategory.energyring // 4
+        flame.physicsBody?.collisionBitMask = PhysicsCategory.none */
+        
         // resize sprite
         flame.setScale(0.3)
         
@@ -168,18 +198,25 @@ class GameScene: SKScene {
         // position over player
         spark.zPosition = 3
         
-        // Determine where to spawn the flame along the X axis
+        // Determine where to spawn the spark along the X axis
         let actualX = random(min: spark.size.width / 2, max: size.width - spark.size.width / 2)
         
-        // Position the flame slightly off-screen along the top edge,
+        // Position the spark slightly off-screen along the top edge,
         // and along a random position along the X axis as calculated above
         spark.position = CGPoint(x: actualX, y: size.height + spark.size.height / 2)
+        // ===================
+        spark.physicsBody = SKPhysicsBody(rectangleOf: spark.size) // 1
+        spark.physicsBody?.isDynamic = true // 2
+        spark.physicsBody?.categoryBitMask = PhysicsCategory.enemy // 3
+        spark.physicsBody?.contactTestBitMask = PhysicsCategory.energyring // 4
+        spark.physicsBody?.collisionBitMask = PhysicsCategory.none
+        // ===================
         
-        // Add the flame to the scene
+        // Add the enemy to the scene
         addChild(spark)
         
-        // Determine speed of the flame
-        let actualDuration = random(min: CGFloat(2.0), max: CGFloat(4.0))
+        // Determine speed of the enemy
+        let actualDuration = random(min: CGFloat(3.0), max: CGFloat(6.0))
         
         // Create the actions
         let actionMove = SKAction.move(to: CGPoint(x: actualX, y: -spark.size.height / 2),
@@ -188,5 +225,35 @@ class GameScene: SKScene {
         spark.run(SKAction.sequence([actionMove, actionMoveDone]))
     }
     
+    func energyDidCollideWithEnemy(energyring: SKSpriteNode, enemy: SKSpriteNode) {
+        //print("Hit")
+        energyring.removeFromParent()
+        enemy.removeFromParent()
+    }
+    
     
 } // class Game scene
+
+extension GameScene: SKPhysicsContactDelegate {
+    func didBegin(_ contact: SKPhysicsContact) {
+        // 1
+        var firstBody: SKPhysicsBody
+        var secondBody: SKPhysicsBody
+        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
+            firstBody = contact.bodyA
+            secondBody = contact.bodyB
+        } else {
+            firstBody = contact.bodyB
+            secondBody = contact.bodyA
+        }
+        
+        // 2
+        if ((firstBody.categoryBitMask & PhysicsCategory.enemy != 0) &&
+            (secondBody.categoryBitMask & PhysicsCategory.energyring != 0)) {
+            if let enemy = firstBody.node as? SKSpriteNode,
+                let energyring = secondBody.node as? SKSpriteNode {
+                energyDidCollideWithEnemy(energyring: energyring, enemy: enemy)
+            }
+        }
+    }
+}
