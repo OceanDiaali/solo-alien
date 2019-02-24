@@ -10,6 +10,17 @@ import SpriteKit
 import GameplayKit
 
 class GameScene: SKScene {
+    // game time per play
+    var gameTime = 20
+    // score display
+    var scoreLabel: SKLabelNode!
+    
+    // player score
+    var playerScore: Int = 0 {
+        didSet {
+            scoreLabel.text = "Score: \(playerScore)"
+        }
+    }
     // global declaration of game player
     let player = SKSpriteNode(imageNamed: "alien")
     
@@ -25,14 +36,37 @@ class GameScene: SKScene {
         self.addChild(background)
         
         // text display for score
-        let scoreLabel: SKLabelNode!
         scoreLabel = SKLabelNode(fontNamed: "Chalkduster")
         scoreLabel.text = "Score: 0"
         scoreLabel.fontSize = 72
-        scoreLabel.horizontalAlignmentMode = .right
+        scoreLabel.horizontalAlignmentMode = .center
         scoreLabel.position = CGPoint(x: self.size.width / 2, y: 1820)
         scoreLabel.zPosition = 2
         addChild(scoreLabel)
+        
+        // text display for countdown timer
+        let timerLabel: SKLabelNode!
+        timerLabel = SKLabelNode(fontNamed: "Chalkduster")
+        timerLabel.text = "20"
+        timerLabel.fontSize = 72
+        //timerLabel.horizontalAlignmentMode = .left
+        timerLabel.position = CGPoint(x: 360, y: 1820)
+        timerLabel.zPosition = 2
+        addChild(timerLabel)
+        
+        let wait = SKAction.wait(forDuration: 1) //change countdown speed here
+        let block = SKAction.run({
+            [unowned self] in
+            
+            if self.gameTime > 0{
+                self.gameTime -= 1
+                timerLabel.text = "\(self.gameTime)"
+            }
+        })
+        let sequence = SKAction.sequence([wait,block])
+        
+        run(SKAction.repeatForever(sequence))
+    //})
         
         run(SKAction.repeatForever(
             SKAction.sequence([
